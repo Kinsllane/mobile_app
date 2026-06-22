@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,11 @@ import {
 } from 'react-native';
 import { useBooks } from '../context/BooksContext';
 
-const AddBookScreen = ({ navigation }) => {
-  const { addBook } = useBooks();
+const EditBookScreen = ({ route, navigation }) => {
+  const { bookId } = route.params;
+  const { getBookById, updateBook } = useBooks();
+  const book = getBookById(bookId);
+
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [rating, setRating] = useState('');
@@ -19,6 +22,24 @@ const AddBookScreen = ({ navigation }) => {
   const [summary, setSummary] = useState('');
 
   const statuses = ['Планирую прочитать', 'Читаю', 'Прочитано', 'Отложено'];
+
+  useEffect(() => {
+    if (book) {
+      setTitle(book.title);
+      setAuthor(book.author);
+      setRating(book.rating ? book.rating.toString() : '');
+      setStatus(book.status);
+      setSummary(book.summary || '');
+    }
+  }, [book]);
+
+  if (!book) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Книга не найдена</Text>
+      </View>
+    );
+  }
 
   const handleSave = async () => {
     if (!title || !author) {
@@ -32,7 +53,7 @@ const AddBookScreen = ({ navigation }) => {
       return;
     }
 
-    await addBook({
+    await updateBook(bookId, {
       title: title.trim(),
       author: author.trim(),
       rating: ratingNum,
@@ -42,7 +63,7 @@ const AddBookScreen = ({ navigation }) => {
 
     Alert.alert(
       'Успех!',
-      `"${title}" успешно добавлена в вашу коллекцию`,
+      'Изменения сохранены',
       [
         {
           text: 'OK',
@@ -115,7 +136,7 @@ const AddBookScreen = ({ navigation }) => {
         />
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <Text style={styles.saveButtonText}>💾 Сохранить книгу</Text>
+          <Text style={styles.saveButtonText}>💾 Сохранить изменения</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -133,6 +154,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  errorText: {
+    fontSize: 18,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 50,
   },
   form: {
     padding: 20,
@@ -204,4 +231,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddBookScreen;
+export default EditBookScreen;

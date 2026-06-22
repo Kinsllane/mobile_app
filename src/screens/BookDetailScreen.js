@@ -5,10 +5,44 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
+import { useBooks } from '../context/BooksContext';
 
 const BookDetailScreen = ({ route, navigation }) => {
-  const { book } = route.params;
+  const { bookId } = route.params;
+  const { getBookById, deleteBook } = useBooks();
+  
+  const book = getBookById(bookId);
+
+  if (!book) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Книга не найдена</Text>
+      </View>
+    );
+  }
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Удалить книгу?',
+      `Вы уверены, что хотите удалить "${book.title}"?`,
+      [
+        {
+          text: 'Отмена',
+          style: 'cancel',
+        },
+        {
+          text: 'Удалить',
+          style: 'destructive',
+          onPress: async () => {
+            await deleteBook(bookId);
+            navigation.goBack();
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -67,9 +101,16 @@ const BookDetailScreen = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.editButton}
-          onPress={() => alert('Функция редактирования будет добавлена')}
+          onPress={() => navigation.navigate('EditBook', { bookId })}
         >
           <Text style={styles.editButtonText}>✏️ Редактировать</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDelete}
+        >
+          <Text style={styles.deleteButtonText}>🗑️ Удалить книгу</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -80,6 +121,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  errorText: {
+    fontSize: 18,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 50,
   },
   coverContainer: {
     height: 250,
@@ -165,10 +212,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 8,
-    marginBottom: 32,
   },
   editButtonText: {
     color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 32,
+    borderWidth: 2,
+    borderColor: '#dc3545',
+  },
+  deleteButtonText: {
+    color: '#dc3545',
     fontSize: 16,
     fontWeight: 'bold',
   },

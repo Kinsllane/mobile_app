@@ -1,48 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
+  ActivityIndicator,
 } from 'react-native';
+import { useBooks } from '../context/BooksContext';
 
 const BooksListScreen = ({ navigation }) => {
-  const [books, setBooks] = useState([
-    {
-      id: '1',
-      title: 'Атомные привычки',
-      author: 'Джеймс Клир',
-      rating: 5,
-      status: 'Прочитано',
-      summary: 'Книга о том, как маленькие изменения приводят к большим результатам',
-      coverColor: '#FF6B6B',
-    },
-    {
-      id: '2',
-      title: 'Думай медленно... решай быстро',
-      author: 'Даниэль Канеман',
-      rating: 4,
-      status: 'Читаю',
-      summary: 'Исследование двух систем мышления',
-      coverColor: '#4ECDC4',
-    },
-    {
-      id: '3',
-      title: 'Sapiens',
-      author: 'Юваль Ной Харари',
-      rating: 5,
-      status: 'Прочитано',
-      summary: 'Краткая история человечества',
-      coverColor: '#45B7D1',
-    },
-  ]);
+  const { books, loading } = useBooks();
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6200ee" />
+        <Text style={styles.loadingText}>Загрузка книг...</Text>
+      </View>
+    );
+  }
 
   const renderBookItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
-      onPress={() => navigation.navigate('BookDetail', { book: item })}
+      onPress={() => navigation.navigate('BookDetail', { bookId: item.id })}
     >
       <View style={[styles.bookCover, { backgroundColor: item.coverColor }]}>
         <Text style={styles.bookCoverText}>📚</Text>
@@ -60,12 +42,20 @@ const BooksListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={books}
-        renderItem={renderBookItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-      />
+      {books.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyEmoji}>📚</Text>
+          <Text style={styles.emptyText}>Пока нет книг</Text>
+          <Text style={styles.emptySubtext}>Добавьте свою первую книгу!</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={books}
+          renderItem={renderBookItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+      )}
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('AddBook')}
@@ -80,6 +70,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: '#666',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  emptyEmoji: {
+    fontSize: 80,
+    marginBottom: 16,
+  },
+  emptyText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
   },
   listContainer: {
     padding: 16,
