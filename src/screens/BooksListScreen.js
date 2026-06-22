@@ -8,16 +8,18 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
-import { useBooks } from '../context/BooksContext';
+import { useBooks, GENRES } from '../context/BooksContext';
 import StatisticsCard from '../components/StatisticsCard';
 
 const BooksListScreen = ({ navigation }) => {
   const { books, loading } = useBooks();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('Все');
+  const [filterGenre, setFilterGenre] = useState('Все');
   const [sortBy, setSortBy] = useState('dateAdded'); // dateAdded, rating, title, author
 
   const statuses = ['Все', 'Планирую прочитать', 'Читаю', 'Прочитано', 'Отложено'];
+  const genres = ['Все', ...GENRES];
   const sortOptions = [
     { value: 'dateAdded', label: '📅 Дата' },
     { value: 'rating', label: '⭐ Рейтинг' },
@@ -46,6 +48,11 @@ const BooksListScreen = ({ navigation }) => {
       result = result.filter((book) => book.status === filterStatus);
     }
 
+    // Фильтр по жанру
+    if (filterGenre !== 'Все') {
+      result = result.filter((book) => book.genre === filterGenre);
+    }
+
     // Сортировка
     result.sort((a, b) => {
       switch (sortBy) {
@@ -62,7 +69,7 @@ const BooksListScreen = ({ navigation }) => {
     });
 
     return result;
-  }, [books, searchQuery, filterStatus, sortBy]);
+  }, [books, searchQuery, filterStatus, filterGenre, sortBy]);
 
   if (loading) {
     return (
@@ -84,6 +91,9 @@ const BooksListScreen = ({ navigation }) => {
       <View style={styles.bookInfo}>
         <Text style={styles.bookTitle}>{item.title}</Text>
         <Text style={styles.bookAuthor}>{item.author}</Text>
+        {item.genre && (
+          <Text style={styles.bookGenre}>🏷️ {item.genre}</Text>
+        )}
         <View style={styles.bookMeta}>
           <Text style={styles.rating}>
             {item.rating ? `⭐ ${item.rating}/5` : '⭐ —'}
@@ -160,6 +170,7 @@ const BooksListScreen = ({ navigation }) => {
 
       {/* Фильтр по статусу */}
       <View style={styles.filterContainer}>
+        <Text style={styles.filterLabel}>Статус:</Text>
         <FlatList
           horizontal
           data={statuses}
@@ -176,6 +187,35 @@ const BooksListScreen = ({ navigation }) => {
                 style={[
                   styles.filterButtonText,
                   filterStatus === item && styles.filterButtonTextActive,
+                ]}
+              >
+                {item}
+              </Text>
+            </TouchableOpacity>
+          )}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+
+      {/* Фильтр по жанру */}
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterLabel}>Жанр:</Text>
+        <FlatList
+          horizontal
+          data={genres}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.filterButton,
+                filterGenre === item && styles.filterButtonActive,
+              ]}
+              onPress={() => setFilterGenre(item)}
+            >
+              <Text
+                style={[
+                  styles.filterButtonText,
+                  filterGenre === item && styles.filterButtonTextActive,
                 ]}
               >
                 {item}
@@ -335,6 +375,12 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     marginBottom: 6,
   },
+  filterLabel: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 6,
+    fontWeight: '600',
+  },
   filterButton: {
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -424,7 +470,12 @@ const styles = StyleSheet.create({
   bookAuthor: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 8,
+    marginBottom: 4,
+  },
+  bookGenre: {
+    fontSize: 12,
+    color: '#6200ee',
+    marginBottom: 6,
   },
   bookMeta: {
     flexDirection: 'row',

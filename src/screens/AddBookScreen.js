@@ -8,7 +8,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useBooks } from '../context/BooksContext';
+import { useBooks, GENRES } from '../context/BooksContext';
 
 const AddBookScreen = ({ navigation }) => {
   const { addBook } = useBooks();
@@ -16,6 +16,7 @@ const AddBookScreen = ({ navigation }) => {
   const [author, setAuthor] = useState('');
   const [rating, setRating] = useState('');
   const [status, setStatus] = useState('Планирую прочитать');
+  const [genre, setGenre] = useState('Другое');
   const [summary, setSummary] = useState('');
 
   const statuses = ['Планирую прочитать', 'Читаю', 'Прочитано', 'Отложено'];
@@ -37,6 +38,7 @@ const AddBookScreen = ({ navigation }) => {
       author: author.trim(),
       rating: ratingNum,
       status,
+      genre,
       summary: summary.trim(),
     });
 
@@ -102,6 +104,35 @@ const AddBookScreen = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
           ))}
+        </View>
+
+        <Text style={styles.label}>Жанр</Text>
+        <View style={styles.genreContainer}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.genreScrollContent}
+          >
+            {GENRES.map((g) => (
+              <TouchableOpacity
+                key={g}
+                style={[
+                  styles.genreButton,
+                  genre === g && styles.genreButtonActive,
+                ]}
+                onPress={() => setGenre(g)}
+              >
+                <Text
+                  style={[
+                    styles.genreText,
+                    genre === g && styles.genreTextActive,
+                  ]}
+                >
+                  {g}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
 
         <Text style={styles.label}>Краткая сводка</Text>
@@ -179,6 +210,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   statusTextActive: {
+    color: '#fff',
+  },
+  genreContainer: {
+    marginBottom: 8,
+  },
+  genreScrollContent: {
+    paddingRight: 16,
+  },
+  genreButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#6200ee',
+    backgroundColor: '#fff',
+    marginRight: 8,
+  },
+  genreButtonActive: {
+    backgroundColor: '#6200ee',
+  },
+  genreText: {
+    color: '#6200ee',
+    fontSize: 14,
+  },
+  genreTextActive: {
     color: '#fff',
   },
   saveButton: {

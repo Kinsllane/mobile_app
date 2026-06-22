@@ -87,6 +87,9 @@ const BookDetailScreen = ({ route, navigation }) => {
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{book.title}</Text>
         <Text style={styles.author}>Автор: {book.author}</Text>
+        {book.genre && (
+          <Text style={styles.genre}>🏷️ Жанр: {book.genre}</Text>
+        )}
 
         <View style={styles.metaContainer}>
           <View style={styles.metaItem}>
@@ -267,7 +270,13 @@ const styles = StyleSheet.create({
   author: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 20,
+    marginBottom: 8,
+  },
+  genre: {
+    fontSize: 15,
+    color: '#6200ee',
+    marginBottom: 16,
+    fontWeight: '600',
   },
   metaContainer: {
     flexDirection: 'row',
