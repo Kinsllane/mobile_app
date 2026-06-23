@@ -78,6 +78,10 @@ const BookDetailScreen = ({ route, navigation }) => {
     setKeyPointsModalVisible(true);
   };
 
+  const toggleFavorite = async () => {
+    await updateBook(bookId, { isFavorite: !book.isFavorite });
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={[styles.coverContainer, { backgroundColor: book.coverColor }]}>
@@ -90,6 +94,19 @@ const BookDetailScreen = ({ route, navigation }) => {
         {book.genre && (
           <Text style={styles.genre}>🏷️ Жанр: {book.genre}</Text>
         )}
+
+        {/* Кнопка избранного */}
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          onPress={toggleFavorite}
+        >
+          <Text style={styles.favoriteIcon}>
+            {book.isFavorite ? '❤️' : '🤍'}
+          </Text>
+          <Text style={styles.favoriteText}>
+            {book.isFavorite ? 'В избранном' : 'Добавить в избранное'}
+          </Text>
+        </TouchableOpacity>
 
         <View style={styles.metaContainer}>
           <View style={styles.metaItem}>
@@ -139,9 +156,13 @@ const BookDetailScreen = ({ route, navigation }) => {
               <Text style={styles.editLink}>✏️ Редактировать</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.notes}>
-            {book.notes || 'Нажмите "Редактировать", чтобы добавить заметки'}
-          </Text>
+          {book.notes ? (
+            <Text style={styles.notes}>{book.notes}</Text>
+          ) : (
+            <Text style={styles.emptyText}>
+              Нажмите "Редактировать", чтобы добавить заметки
+            </Text>
+          )}
         </View>
 
         <TouchableOpacity
@@ -177,6 +198,7 @@ const BookDetailScreen = ({ route, navigation }) => {
               multiline
               numberOfLines={10}
               textAlignVertical="top"
+              placeholderTextColor="#666"
             />
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -217,6 +239,7 @@ const BookDetailScreen = ({ route, navigation }) => {
               multiline
               numberOfLines={10}
               textAlignVertical="top"
+              placeholderTextColor="#666"
             />
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -277,6 +300,26 @@ const styles = StyleSheet.create({
     color: '#6200ee',
     marginBottom: 16,
     fontWeight: '600',
+  },
+  favoriteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f8f8f8',
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#ffcdd2',
+  },
+  favoriteIcon: {
+    fontSize: 24,
+    marginRight: 8,
+  },
+  favoriteText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
   },
   metaContainer: {
     flexDirection: 'row',

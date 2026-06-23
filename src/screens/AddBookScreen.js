@@ -63,6 +63,7 @@ const AddBookScreen = ({ navigation }) => {
           placeholder="Введите название"
           value={title}
           onChangeText={setTitle}
+          placeholderTextColor="#666"
         />
 
         <Text style={styles.label}>Автор *</Text>
@@ -71,6 +72,7 @@ const AddBookScreen = ({ navigation }) => {
           placeholder="Введите автора"
           value={author}
           onChangeText={setAuthor}
+          placeholderTextColor="#666"
         />
 
         <Text style={styles.label}>Рейтинг (1-5)</Text>
@@ -81,6 +83,7 @@ const AddBookScreen = ({ navigation }) => {
           onChangeText={setRating}
           keyboardType="numeric"
           maxLength={1}
+          placeholderTextColor="#666"
         />
 
         <Text style={styles.label}>Статус чтения</Text>
@@ -143,6 +146,7 @@ const AddBookScreen = ({ navigation }) => {
           onChangeText={setSummary}
           multiline
           numberOfLines={4}
+          placeholderTextColor="#666"
         />
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>

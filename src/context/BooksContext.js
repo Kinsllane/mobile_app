@@ -16,6 +16,9 @@ const DEFAULT_BOOKS = [
     genre: 'Саморазвитие',
     summary: 'Книга о том, как маленькие изменения приводят к большим результатам',
     coverColor: '#FF6B6B',
+    isFavorite: false,
+    notes: '',
+    keyPoints: [],
   },
   {
     id: '2',
@@ -26,6 +29,9 @@ const DEFAULT_BOOKS = [
     genre: 'Психология',
     summary: 'Исследование двух систем мышления',
     coverColor: '#4ECDC4',
+    isFavorite: false,
+    notes: '',
+    keyPoints: [],
   },
   {
     id: '3',
@@ -36,6 +42,9 @@ const DEFAULT_BOOKS = [
     genre: 'История',
     summary: 'Краткая история человечества',
     coverColor: '#45B7D1',
+    isFavorite: true,
+    notes: 'Отличная книга про эволюцию человечества!',
+    keyPoints: ['История развития человека', 'Когнитивная революция', 'Появление земледелия'],
   },
 ];
 
@@ -103,6 +112,9 @@ export const BooksProvider = ({ children }) => {
       ...book,
       id: Date.now().toString(), // Простой ID на основе времени
       coverColor: getRandomColor(),
+      isFavorite: book.isFavorite || false,
+      notes: book.notes || '',
+      keyPoints: book.keyPoints || [],
     };
     const updatedBooks = [...books, newBook];
     await saveBooks(updatedBooks);

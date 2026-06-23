@@ -7,6 +7,9 @@ import BooksListScreen from './src/screens/BooksListScreen';
 import BookDetailScreen from './src/screens/BookDetailScreen';
 import AddBookScreen from './src/screens/AddBookScreen';
 import EditBookScreen from './src/screens/EditBookScreen';
+import StatisticsScreen from './src/screens/StatisticsScreen';
+import GoalsScreen from './src/screens/GoalsScreen';
+import FavoritesScreen from './src/screens/FavoritesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +49,21 @@ export default function App() {
             name="EditBook" 
             component={EditBookScreen}
             options={{ title: 'Редактировать книгу' }}
+          />
+          <Stack.Screen 
+            name="Statistics" 
+            component={StatisticsScreen}
+            options={{ title: 'Статистика' }}
+          />
+          <Stack.Screen 
+            name="Goals" 
+            component={GoalsScreen}
+            options={{ title: 'Цели чтения' }}
+          />
+          <Stack.Screen 
+            name="Favorites" 
+            component={FavoritesScreen}
+            options={{ title: 'Избранное' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

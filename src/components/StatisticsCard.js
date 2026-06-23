@@ -1,13 +1,19 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { GENRES } from '../context/BooksContext';
+import ProgressBar from './ProgressBar';
+import StatCard from './StatCard';
 
 const StatisticsCard = ({ books }) => {
+  const [showDetails, setShowDetails] = useState(false);
+  
   const totalBooks = books.length;
   const readBooks = books.filter((book) => book.status === 'Прочитано').length;
   const readingBooks = books.filter((book) => book.status === 'Читаю').length;
   const plannedBooks = books.filter(
     (book) => book.status === 'Планирую прочитать'
   ).length;
+  const postponedBooks = totalBooks - readBooks - readingBooks - plannedBooks;
 
   // Средний рейтинг прочитанных книг
   const ratedBooks = books.filter((book) => book.rating > 0);
@@ -23,63 +29,145 @@ const StatisticsCard = ({ books }) => {
   const readPercentage =
     totalBooks > 0 ? Math.round((readBooks / totalBooks) * 100) : 0;
 
-  if (totalBooks === 0) {
-    return null;
-  }
+  // Подсчет жанров
+  const genreCounts = {};
+  books.forEach(book => {
+    const genre = book.genre || 'Другое';
+    genreCounts[genre] = (genreCounts[genre] || 0) + 1;
+  });
+
+  // Топ-5 жанров для прогресс-баров
+  const topGenres = Object.entries(genreCounts)
+    .map(([genre, count]) => ({ genre, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  const maxGenreCount = topGenres.length > 0 ? topGenres[0].count : 1;
+
+  // Цвета для жанров
+  const genreColors = {
+    'Фантастика': '#FF6B6B',
+    'Детектив': '#4ECDC4',
+    'Фэнтези': '#45B7D1',
+    'Романтика': '#FFA07A',
+    'Бизнес': '#98D8C8',
+    'Саморазвитие': '#F7DC6F',
+    'Психология': '#BB8FCE',
+    'История': '#85C1E2',
+    'Биография': '#F8B739',
+    'Наука': '#52B788',
+    'Философия': '#FF8C94',
+    'Классика': '#A8E6CF',
+    'Приключения': '#FFD3B6',
+    'Ужасы': '#FFAAA5',
+    'Триллер': '#C7CEEA',
+    'Другое': '#B4A7D6',
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>📊 Моя статистика</Text>
 
-      <View style={styles.mainStats}>
-        <View style={styles.mainStatItem}>
-          <Text style={styles.mainStatValue}>{totalBooks}</Text>
-          <Text style={styles.mainStatLabel}>Всего книг</Text>
-        </View>
-        <View style={styles.mainStatItem}>
-          <Text style={[styles.mainStatValue, { color: '#28a745' }]}>
-            {readBooks}
-          </Text>
-          <Text style={styles.mainStatLabel}>Прочитано</Text>
-        </View>
-        <View style={styles.mainStatItem}>
-          <Text style={[styles.mainStatValue, { color: '#FFA500' }]}>
-            {averageRating}
-          </Text>
-          <Text style={styles.mainStatLabel}>Средний рейтинг</Text>
-        </View>
-      </View>
-
-      {/* Прогресс-бар */}
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
-          <View
-            style={[styles.progressFill, { width: `${readPercentage}%` }]}
+      {/* Основные карточки-метрики 2x2 */}
+      <View style={styles.statsGrid}>
+        <View style={styles.statsRow}>
+          <StatCard 
+            emoji="📚" 
+            value={totalBooks} 
+            label="Всего книг" 
+            color="#6200ee"
+          />
+          <StatCard 
+            emoji="✅" 
+            value={readBooks} 
+            label="Прочитано" 
+            color="#28a745"
           />
         </View>
-        <Text style={styles.progressText}>{readPercentage}% прочитано</Text>
+        <View style={styles.statsRow}>
+          <StatCard 
+            emoji="⭐" 
+            value={averageRating} 
+            label="Средний рейтинг" 
+            color="#FFA500"
+            subtitle={`из ${ratedBooks.length} оценённых`}
+          />
+          <StatCard 
+            emoji="📈" 
+            value={`${readPercentage}%`} 
+            label="Прогресс" 
+            color="#45B7D1"
+            subtitle="прочитано"
+          />
+        </View>
       </View>
 
-      {/* Детальная статистика */}
-      <View style={styles.detailStats}>
-        <View style={styles.detailStatItem}>
-          <Text style={styles.detailStatEmoji}>📖</Text>
-          <Text style={styles.detailStatValue}>{readingBooks}</Text>
-          <Text style={styles.detailStatLabel}>Читаю</Text>
+      {/* Кнопка показа детализации */}
+      <TouchableOpacity
+        style={styles.detailsToggle}
+        onPress={() => setShowDetails(!showDetails)}
+      >
+        <Text style={styles.detailsToggleText}>
+          {showDetails ? '📊 Скрыть детали' : '📊 Показать детальную статистику'}
+        </Text>
+      </TouchableOpacity>
+
+      {/* Детальная статистика с прогресс-барами */}
+      {showDetails && (
+        <View style={styles.detailsContainer}>
+          {/* Статусы */}
+          <Text style={styles.sectionTitle}>По статусам</Text>
+          <ProgressBar 
+            label="Прочитано" 
+            value={readBooks} 
+            count={readBooks}
+            color="#28a745" 
+            maxValue={totalBooks}
+          />
+          <ProgressBar 
+            label="Читаю сейчас" 
+            value={readingBooks} 
+            count={readingBooks}
+            color="#FFA500" 
+            maxValue={totalBooks}
+          />
+          <ProgressBar 
+            label="Планирую прочитать" 
+            value={plannedBooks} 
+            count={plannedBooks}
+            color="#6200ee" 
+            maxValue={totalBooks}
+          />
+          {postponedBooks > 0 && (
+            <ProgressBar 
+              label="Отложено" 
+              value={postponedBooks} 
+              count={postponedBooks}
+              color="#dc3545" 
+              maxValue={totalBooks}
+            />
+          )}
+
+          {/* Топ жанров */}
+          {topGenres.length > 0 && (
+            <>
+              <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
+                Топ-{topGenres.length} жанров
+              </Text>
+              {topGenres.map((item, index) => (
+                <ProgressBar 
+                  key={item.genre}
+                  label={item.genre} 
+                  value={item.count} 
+                  count={item.count}
+                  color={genreColors[item.genre] || '#B4A7D6'} 
+                  maxValue={maxGenreCount}
+                />
+              ))}
+            </>
+          )}
         </View>
-        <View style={styles.detailStatItem}>
-          <Text style={styles.detailStatEmoji}>📚</Text>
-          <Text style={styles.detailStatValue}>{plannedBooks}</Text>
-          <Text style={styles.detailStatLabel}>Планирую</Text>
-        </View>
-        <View style={styles.detailStatItem}>
-          <Text style={styles.detailStatEmoji}>⏸️</Text>
-          <Text style={styles.detailStatValue}>
-            {totalBooks - readBooks - readingBooks - plannedBooks}
-          </Text>
-          <Text style={styles.detailStatLabel}>Отложено</Text>
-        </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -101,70 +189,42 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
+    marginBottom: 16,
+  },
+  statsGrid: {
     marginBottom: 12,
   },
-  mainStats: {
+  statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 12,
+    justifyContent: 'space-between',
+    marginBottom: 8,
   },
-  mainStatItem: {
+  detailsToggle: {
+    marginTop: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#f8f8f8',
+    borderRadius: 8,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
   },
-  mainStatValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
+  detailsToggleText: {
+    fontSize: 14,
     color: '#6200ee',
-  },
-  mainStatLabel: {
-    fontSize: 11,
-    color: '#666',
-    marginTop: 2,
-  },
-  progressContainer: {
-    marginBottom: 12,
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginBottom: 6,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#28a745',
-    borderRadius: 3,
-  },
-  progressText: {
-    fontSize: 13,
-    color: '#666',
-    textAlign: 'center',
     fontWeight: '600',
   },
-  detailStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 12,
+  detailsContainer: {
+    marginTop: 16,
+    paddingTop: 16,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
   },
-  detailStatItem: {
-    alignItems: 'center',
-  },
-  detailStatEmoji: {
-    fontSize: 20,
-    marginBottom: 2,
-  },
-  detailStatValue: {
-    fontSize: 18,
+  sectionTitle: {
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#333',
-  },
-  detailStatLabel: {
-    fontSize: 10,
-    color: '#666',
-    marginTop: 2,
+    marginBottom: 12,
   },
 });
 
