@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
+import { colors, typography, spacing, borderRadius } from '../utils/theme';
 
 const ProgressBar = ({ label, value, count, color, maxValue = 100 }) => {
   const animatedWidth = useRef(new Animated.Value(0)).current;
@@ -42,37 +43,41 @@ const ProgressBar = ({ label, value, count, color, maxValue = 100 }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: spacing.base,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 6,
+    marginBottom: spacing.sm,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
   },
   count: {
-    fontSize: 13,
-    color: '#666',
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    fontWeight: typography.semibold,
   },
   barContainer: {
-    height: 12,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 6,
+    height: 14,
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: borderRadius.sm,
     overflow: 'hidden',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   bar: {
     height: '100%',
-    borderRadius: 6,
+    borderRadius: borderRadius.sm,
   },
   percentage: {
-    fontSize: 12,
-    color: '#999',
+    fontSize: typography.sm,
+    color: colors.textSecondary,
     textAlign: 'right',
+    fontWeight: typography.semibold,
   },
 });
 

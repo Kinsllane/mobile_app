@@ -9,6 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { useBooks, GENRES } from '../context/BooksContext';
+import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const EditBookScreen = ({ route, navigation }) => {
   const { bookId } = route.params;
@@ -85,7 +86,7 @@ const EditBookScreen = ({ route, navigation }) => {
           placeholder="Введите название"
           value={title}
           onChangeText={setTitle}
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textTertiary}
         />
 
         <Text style={styles.label}>Автор *</Text>
@@ -94,7 +95,7 @@ const EditBookScreen = ({ route, navigation }) => {
           placeholder="Введите автора"
           value={author}
           onChangeText={setAuthor}
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textTertiary}
         />
 
         <Text style={styles.label}>Рейтинг (1-5)</Text>
@@ -105,7 +106,7 @@ const EditBookScreen = ({ route, navigation }) => {
           onChangeText={setRating}
           keyboardType="numeric"
           maxLength={1}
-          placeholderTextColor="#666"
+          placeholderTextColor={colors.textTertiary}
         />
 
         <Text style={styles.label}>Статус чтения</Text>
@@ -168,8 +169,7 @@ const EditBookScreen = ({ route, navigation }) => {
           onChangeText={setSummary}
           multiline
           numberOfLines={4}
-          placeholderTextColor="#666"
-        />
+          placeholderTextColor={colors.textTertiary}
         />
 
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -190,31 +190,34 @@ const EditBookScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.backgroundSecondary,
   },
   errorText: {
-    fontSize: 18,
-    color: '#999',
+    fontSize: typography.lg,
+    color: colors.textSecondary,
     textAlign: 'center',
     marginTop: 50,
+    fontWeight: typography.semibold,
   },
   form: {
-    padding: 20,
+    padding: spacing.lg,
   },
   label: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8,
-    marginTop: 16,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
+    marginTop: spacing.base,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    borderColor: colors.border,
+    borderRadius: borderRadius.md,
+    padding: spacing.base,
+    fontSize: typography.base,
+    backgroundColor: colors.surface,
+    color: colors.textPrimary,
+    fontWeight: typography.regular,
   },
   textArea: {
     height: 100,
@@ -223,73 +226,84 @@ const styles = StyleSheet.create({
   statusContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: spacing.sm,
   },
   statusButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: '#6200ee',
-    backgroundColor: '#fff',
-    marginRight: 8,
-    marginBottom: 8,
+    borderColor: colors.border,
+    backgroundColor: colors.backgroundSecondary,
+    marginRight: spacing.sm,
+    marginBottom: spacing.sm,
   },
   statusButtonActive: {
-    backgroundColor: '#6200ee',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
+    borderWidth: 2,
   },
   statusText: {
-    color: '#6200ee',
-    fontSize: 14,
+    color: colors.textSecondary,
+    fontSize: typography.sm,
+    fontWeight: typography.semibold,
   },
   statusTextActive: {
-    color: '#fff',
+    color: colors.primary,
+    fontWeight: typography.bold,
   },
   genreContainer: {
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   genreScrollContent: {
-    paddingRight: 16,
+    paddingRight: spacing.base,
   },
   genreButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: '#6200ee',
-    backgroundColor: '#fff',
-    marginRight: 8,
+    borderColor: colors.border,
+    backgroundColor: colors.backgroundSecondary,
+    marginRight: spacing.sm,
   },
   genreButtonActive: {
-    backgroundColor: '#6200ee',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
+    borderWidth: 2,
   },
   genreText: {
-    color: '#6200ee',
-    fontSize: 14,
+    color: colors.textSecondary,
+    fontSize: typography.sm,
+    fontWeight: typography.semibold,
   },
   genreTextActive: {
-    color: '#fff',
+    color: colors.primary,
+    fontWeight: typography.bold,
   },
   saveButton: {
-    backgroundColor: '#6200ee',
-    padding: 16,
-    borderRadius: 8,
+    borderRadius: borderRadius.lg,
+    marginTop: spacing.xl,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.base,
+    paddingHorizontal: spacing.lg,
     alignItems: 'center',
-    marginTop: 24,
+    ...shadows.md,
   },
   saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.surface,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
   },
   cancelButton: {
-    padding: 16,
+    paddingVertical: spacing.base,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   cancelButtonText: {
-    color: '#666',
-    fontSize: 16,
+    color: colors.textSecondary,
+    fontSize: typography.base,
+    fontWeight: typography.semibold,
   },
 });
 

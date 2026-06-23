@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
-const StatCard = ({ emoji, value, label, color = '#6200ee', subtitle }) => {
+const StatCard = ({ emoji, value, label, color = colors.primary, subtitle }) => {
   return (
     <View style={[styles.card, { borderLeftColor: color }]}>
       <Text style={styles.emoji}>{emoji}</Text>
@@ -14,40 +15,40 @@ const StatCard = ({ emoji, value, label, color = '#6200ee', subtitle }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.lg,
     alignItems: 'center',
     flex: 1,
-    marginHorizontal: 4,
+    marginHorizontal: spacing.xs,
     borderLeftWidth: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-    minHeight: 120,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
+    minHeight: 140,
     justifyContent: 'center',
   },
   emoji: {
-    fontSize: 32,
-    marginBottom: 8,
+    fontSize: 40,
+    marginBottom: spacing.md,
   },
   value: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    marginBottom: spacing.sm,
   },
   label: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: typography.sm,
+    color: colors.textSecondary,
     textAlign: 'center',
+    fontWeight: typography.semibold,
   },
   subtitle: {
-    fontSize: 11,
-    color: '#999',
-    marginTop: 4,
+    fontSize: typography.xs,
+    color: colors.textTertiary,
+    marginTop: spacing.xs,
     textAlign: 'center',
+    fontWeight: typography.regular,
   },
 });
 

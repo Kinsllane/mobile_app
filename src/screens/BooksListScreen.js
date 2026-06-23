@@ -9,6 +9,7 @@ import {
   TextInput,
 } from 'react-native';
 import { useBooks, GENRES } from '../context/BooksContext';
+import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const BooksListScreen = ({ navigation }) => {
   const { books, loading, updateBook } = useBooks();
@@ -81,7 +82,7 @@ const BooksListScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6200ee" />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={styles.loadingText}>Загрузка книг...</Text>
       </View>
     );
@@ -137,24 +138,32 @@ const BooksListScreen = ({ navigation }) => {
         {/* Кнопки быстрой навигации */}
         <View style={styles.quickNavContainer}>
           <TouchableOpacity
-            style={[styles.quickNavButton, { backgroundColor: '#6200ee' }]}
+            style={[styles.quickNavButton, styles.statsButton]}
             onPress={() => navigation.navigate('Statistics')}
           >
-            <Text style={styles.quickNavText}>📊 Статистика</Text>
+            <Text style={styles.quickNavText}>Статистика</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.quickNavButton, { backgroundColor: '#FFA500' }]}
+            style={[styles.quickNavButton, styles.goalsButton]}
             onPress={() => navigation.navigate('Goals')}
           >
-            <Text style={styles.quickNavText}>🎯 Цели</Text>
+            <Text style={styles.quickNavText}>Цели</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.quickNavButton, { backgroundColor: '#dc3545' }]}
+            style={[styles.quickNavButton, styles.favoritesButton]}
             onPress={() => navigation.navigate('Favorites')}
           >
-            <Text style={styles.quickNavText}>❤️ Избранное</Text>
+            <Text style={styles.quickNavText}>Избранное</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Новая кнопка: Книжные места */}
+        <TouchableOpacity
+          style={styles.placesButton}
+          onPress={() => navigation.navigate('ReadingPlaces')}
+        >
+          <Text style={styles.placesButtonText}>Книжные места на карте</Text>
+        </TouchableOpacity>
 
         {/* Поиск */}
         <View style={styles.searchContainer}>
@@ -164,7 +173,7 @@ const BooksListScreen = ({ navigation }) => {
             placeholder="Поиск по названию или автору..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            placeholderTextColor="#666"
+            placeholderTextColor={colors.textTertiary}
           />
           {searchQuery.length > 0 && (
             <TouchableOpacity
@@ -386,334 +395,335 @@ const BooksListScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.backgroundSecondary,
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 80, // Отступ для кнопки
+    paddingBottom: 80,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.backgroundSecondary,
   },
   loadingText: {
-    marginTop: 12,
-    fontSize: 16,
-    color: '#666',
-  },
-  statisticsToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginTop: 16,
-    marginBottom: 8,
-    padding: 12,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  statisticsToggleIcon: {
-    fontSize: 18,
-    marginRight: 8,
-  },
-  statisticsToggleText: {
-    fontSize: 15,
-    color: '#6200ee',
-    fontWeight: '600',
+    marginTop: spacing.md,
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    fontWeight: typography.semibold,
   },
   filtersToggle: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 8,
-    padding: 12,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 2,
-    elevation: 2,
+    backgroundColor: colors.surface,
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.sm,
+    padding: spacing.base,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   filtersToggleIcon: {
-    fontSize: 18,
-    marginRight: 8,
+    fontSize: 20,
+    marginRight: spacing.sm,
   },
   filtersToggleText: {
-    fontSize: 15,
-    color: '#6200ee',
-    fontWeight: '600',
+    fontSize: typography.base,
+    color: colors.primary,
+    fontWeight: typography.bold,
     flex: 1,
   },
   filterBadge: {
-    backgroundColor: '#ff4444',
-    borderRadius: 12,
+    backgroundColor: colors.error,
+    borderRadius: borderRadius.md,
     minWidth: 24,
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 8,
+    marginLeft: spacing.sm,
   },
   filterBadgeText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  resetFiltersButton: {
-    backgroundColor: '#f0f0f0',
-    marginHorizontal: 16,
-    marginBottom: 8,
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  resetFiltersText: {
-    color: '#666',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.surface,
+    fontSize: typography.xs,
+    fontWeight: typography.bold,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    margin: 16,
-    marginTop: 8,
-    marginBottom: 8,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    margin: spacing.base,
+    marginTop: spacing.sm,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   searchIcon: {
-    fontSize: 20,
-    marginRight: 8,
+    fontSize: 22,
+    marginRight: spacing.md,
   },
   searchInput: {
     flex: 1,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#333',
+    paddingVertical: spacing.base,
+    fontSize: typography.base,
+    color: colors.textPrimary,
+    fontWeight: typography.medium,
   },
   clearButton: {
-    padding: 4,
+    padding: spacing.sm,
   },
   clearButtonText: {
-    fontSize: 20,
-    color: '#999',
+    fontSize: 22,
+    color: colors.textTertiary,
   },
   quickNavContainer: {
     flexDirection: 'row',
-    marginHorizontal: 16,
-    marginTop: 16,
-    marginBottom: 8,
-    gap: 8,
+    marginHorizontal: spacing.base,
+    marginTop: spacing.base,
+    marginBottom: spacing.sm,
+    gap: spacing.sm,
   },
   quickNavButton: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 4,
-    borderRadius: 10,
+    borderRadius: borderRadius.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 3,
+    ...shadows.sm,
+  },
+  statsButton: {
+    backgroundColor: colors.primary,
+  },
+  goalsButton: {
+    backgroundColor: colors.primary,
+  },
+  favoritesButton: {
+    backgroundColor: colors.primary,
   },
   quickNavText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: typography.sm,
+    fontWeight: typography.bold,
+    color: colors.surface,
+    textAlign: 'center',
+  },
+  placesButton: {
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.sm,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.success,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    alignItems: 'center',
+    ...shadows.sm,
+  },
+  placesButtonText: {
+    fontSize: typography.sm,
+    fontWeight: typography.bold,
+    color: colors.surface,
     textAlign: 'center',
   },
   sortContainer: {
-    paddingHorizontal: 16,
-    marginBottom: 6,
+    paddingHorizontal: spacing.base,
+    marginBottom: spacing.sm,
   },
   sortLabel: {
-    fontSize: 13,
-    color: '#666',
-    marginBottom: 6,
-    fontWeight: '600',
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    fontWeight: typography.semibold,
   },
   sortButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 6,
+    gap: spacing.sm,
   },
   sortButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 14,
-    backgroundColor: '#fff',
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.backgroundSecondary,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.border,
   },
   sortButtonActive: {
-    backgroundColor: '#6200ee',
-    borderColor: '#6200ee',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
+    borderWidth: 2,
   },
   sortButtonText: {
-    fontSize: 12,
-    color: '#666',
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    fontWeight: typography.semibold,
   },
   sortButtonTextActive: {
-    color: '#fff',
-    fontWeight: '600',
+    color: colors.primary,
+    fontWeight: typography.bold,
   },
   filterContainer: {
-    paddingLeft: 16,
-    marginBottom: 6,
+    paddingLeft: spacing.base,
+    marginBottom: spacing.sm,
   },
   filterLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 6,
-    fontWeight: '600',
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    fontWeight: typography.semibold,
   },
   filterScroll: {
     flexGrow: 0,
   },
   filterButton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: '#fff',
-    marginRight: 6,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.base,
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.backgroundSecondary,
+    marginRight: spacing.sm,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.border,
   },
   filterButtonActive: {
-    backgroundColor: '#6200ee',
-    borderColor: '#6200ee',
+    backgroundColor: colors.primaryLight,
+    borderColor: colors.primary,
+    borderWidth: 2,
   },
   filterButtonText: {
-    fontSize: 13,
-    color: '#666',
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    fontWeight: typography.semibold,
   },
   filterButtonTextActive: {
-    color: '#fff',
-    fontWeight: '600',
+    color: colors.primary,
+    fontWeight: typography.bold,
+  },
+  resetFiltersButton: {
+    backgroundColor: colors.backgroundSecondary,
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.sm,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  resetFiltersText: {
+    color: colors.textSecondary,
+    fontSize: typography.sm,
+    fontWeight: typography.semibold,
   },
   resultCount: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    fontSize: 13,
-    color: '#666',
-    fontWeight: '600',
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.sm,
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    fontWeight: typography.medium,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: spacing['2xl'],
+    paddingVertical: 60,
   },
   emptyEmoji: {
     fontSize: 80,
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   emptyText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: typography['2xl'],
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
   },
   emptySubtext: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: typography.base,
+    color: colors.textSecondary,
     textAlign: 'center',
+    fontWeight: typography.regular,
   },
   booksContainer: {
-    padding: 16,
-    paddingTop: 8,
+    padding: spacing.base,
+    paddingTop: spacing.sm,
   },
   bookCard: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.lg,
+    padding: spacing.base,
+    marginBottom: spacing.base,
+    borderWidth: 1,
+    borderColor: colors.border,
     position: 'relative',
+    ...shadows.sm,
   },
   bookCover: {
-    width: 80,
-    height: 120,
-    borderRadius: 8,
+    width: 95,
+    height: 140,
+    borderRadius: borderRadius.md,
     justifyContent: 'center',
     alignItems: 'center',
   },
   bookCoverText: {
-    fontSize: 40,
+    fontSize: 48,
   },
   bookInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: spacing.base,
     justifyContent: 'center',
   },
   bookTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
+    fontSize: typography.lg,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
   },
   bookAuthor: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    marginBottom: spacing.xs,
+    fontWeight: typography.regular,
   },
   bookGenre: {
-    fontSize: 12,
-    color: '#6200ee',
-    marginBottom: 6,
+    fontSize: typography.sm,
+    color: colors.textTertiary,
+    marginBottom: spacing.sm,
+    fontWeight: typography.medium,
   },
   bookMeta: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   rating: {
-    fontSize: 14,
-    color: '#FFA500',
+    fontSize: typography.sm,
+    color: colors.rating,
+    fontWeight: typography.semibold,
   },
   status: {
-    fontSize: 14,
-    color: '#6200ee',
-    fontWeight: '600',
+    fontSize: typography.sm,
+    color: colors.primary,
+    fontWeight: typography.semibold,
   },
   favoriteButtonCard: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderRadius: 20,
-    width: 36,
-    height: 36,
+    top: spacing.sm,
+    right: spacing.sm,
+    backgroundColor: colors.favoriteLight,
+    borderRadius: borderRadius.full,
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: colors.favorite,
   },
   favoriteIconCard: {
-    fontSize: 20,
+    fontSize: 18,
   },
   bottomSpacer: {
     height: 20,
@@ -723,28 +733,22 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingHorizontal: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
+    paddingHorizontal: spacing.base,
+    backgroundColor: 'transparent',
   },
   addButton: {
-    backgroundColor: '#6200ee',
-    padding: 16,
-    borderRadius: 8,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.base,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    ...shadows.md,
   },
   addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.surface,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
   },
 });
 

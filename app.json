@@ -6,8 +6,20 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Разрешить приложению использовать вашу геолокацию для отметки мест чтения."
+        }
+      ]
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Приложение использует вашу геолокацию для отметки мест, где вы читаете книги.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Приложение использует вашу геолокацию для отметки мест, где вы читаете книги."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -15,7 +27,11 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"

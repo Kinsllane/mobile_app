@@ -10,6 +10,7 @@ import EditBookScreen from './src/screens/EditBookScreen';
 import StatisticsScreen from './src/screens/StatisticsScreen';
 import GoalsScreen from './src/screens/GoalsScreen';
 import FavoritesScreen from './src/screens/FavoritesScreen';
+import ReadingPlacesScreen from './src/screens/ReadingPlacesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -64,6 +65,11 @@ export default function App() {
             name="Favorites" 
             component={FavoritesScreen}
             options={{ title: 'Избранное' }}
+          />
+          <Stack.Screen 
+            name="ReadingPlaces" 
+            component={ReadingPlacesScreen}
+            options={{ title: 'Книжные места' }}
           />
         </Stack.Navigator>
       </NavigationContainer>

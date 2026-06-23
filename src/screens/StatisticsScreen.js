@@ -10,6 +10,7 @@ import {
 import { useBooks } from '../context/BooksContext';
 import ProgressBar from '../components/ProgressBar';
 import StatCard from '../components/StatCard';
+import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const StatisticsScreen = ({ navigation }) => {
   const { books } = useBooks();
@@ -36,7 +37,7 @@ const StatisticsScreen = ({ navigation }) => {
 
   const highRatedBooks = books.filter((book) => book.rating >= 4).length;
 
-  // Процент прогресса
+  // Цвета для статусов
   const readPercentage =
     totalBooks > 0 ? Math.round((readBooks / totalBooks) * 100) : 0;
 
@@ -54,18 +55,18 @@ const StatisticsScreen = ({ navigation }) => {
 
   const maxGenreCount = topGenres.length > 0 ? topGenres[0].count : 1;
 
-  // Цвета для жанров
+  // Цвета для жанров (обновлённая палитра)
   const genreColors = {
     Фантастика: '#FF6B6B',
     Детектив: '#4ECDC4',
     Фэнтези: '#45B7D1',
     Романтика: '#FFA07A',
     Бизнес: '#98D8C8',
-    Саморазвитие: '#F7DC6F',
+    Саморазвитие: '#F59E0B',
     Психология: '#BB8FCE',
     История: '#85C1E2',
     Биография: '#F8B739',
-    Наука: '#52B788',
+    Наука: '#10B981',
     Философия: '#FF8C94',
     Классика: '#A8E6CF',
     Приключения: '#FFD3B6',
@@ -78,7 +79,7 @@ const StatisticsScreen = ({ navigation }) => {
     <ScrollView style={styles.container}>
       {/* Заголовок */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>📊 Детальная статистика</Text>
+        <Text style={styles.headerTitle}>Детальная статистика</Text>
         <Text style={styles.headerSubtitle}>
           Полный обзор вашей библиотеки
         </Text>
@@ -91,13 +92,13 @@ const StatisticsScreen = ({ navigation }) => {
             emoji="📚"
             value={totalBooks}
             label="Всего книг"
-            color="#6200ee"
+            color="#7C3AED"
           />
           <StatCard
             emoji="✅"
             value={readBooks}
             label="Прочитано"
-            color="#28a745"
+            color="#10B981"
           />
         </View>
         <View style={styles.statsRow}>
@@ -105,7 +106,7 @@ const StatisticsScreen = ({ navigation }) => {
             emoji="⭐"
             value={averageRating}
             label="Средний рейтинг"
-            color="#FFA500"
+            color="#F59E0B"
             subtitle={`${ratedBooks.length} оценок`}
           />
           <StatCard
@@ -132,7 +133,7 @@ const StatisticsScreen = ({ navigation }) => {
             emoji="📖"
             value={readingBooks}
             label="Читаю сейчас"
-            color="#FFA500"
+            color="#F59E0B"
           />
         </View>
       </View>
@@ -144,21 +145,21 @@ const StatisticsScreen = ({ navigation }) => {
           label="Прочитано"
           value={readBooks}
           count={readBooks}
-          color="#28a745"
+          color="#10B981"
           maxValue={totalBooks}
         />
         <ProgressBar
           label="Читаю сейчас"
           value={readingBooks}
           count={readingBooks}
-          color="#FFA500"
+          color="#F59E0B"
           maxValue={totalBooks}
         />
         <ProgressBar
           label="Планирую прочитать"
           value={plannedBooks}
           count={plannedBooks}
-          color="#6200ee"
+          color="#7C3AED"
           maxValue={totalBooks}
         />
         {postponedBooks > 0 && (
@@ -166,7 +167,7 @@ const StatisticsScreen = ({ navigation }) => {
             label="Отложено"
             value={postponedBooks}
             count={postponedBooks}
-            color="#dc3545"
+            color="#EF4444"
             maxValue={totalBooks}
           />
         )}
@@ -196,7 +197,7 @@ const StatisticsScreen = ({ navigation }) => {
         style={styles.goalsButton}
         onPress={() => navigation.navigate('Goals')}
       >
-        <Text style={styles.goalsButtonText}>🎯 Перейти к целям чтения</Text>
+        <Text style={styles.goalsButtonText}>Перейти к целям чтения</Text>
       </TouchableOpacity>
 
       <View style={{ height: 20 }} />
@@ -207,69 +208,65 @@ const StatisticsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.backgroundSecondary,
   },
   header: {
-    backgroundColor: '#6200ee',
-    padding: 20,
-    paddingBottom: 30,
+    padding: spacing.lg,
+    paddingBottom: spacing.xl,
+    backgroundColor: colors.secondary,
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    color: colors.surface,
+    marginBottom: spacing.xs,
   },
   headerSubtitle: {
-    fontSize: 14,
-    color: '#fff',
+    fontSize: typography.base,
+    color: colors.surface,
     opacity: 0.9,
+    fontWeight: typography.semibold,
   },
   mainStatsContainer: {
-    padding: 16,
+    padding: spacing.base,
     paddingTop: 0,
     marginTop: -20,
   },
   section: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.base,
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
+    fontSize: typography.lg,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.base,
   },
   goalsButton: {
-    backgroundColor: '#6200ee',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
+    borderRadius: borderRadius.lg,
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.base,
+    backgroundColor: colors.warning,
+    paddingVertical: spacing.base,
+    paddingHorizontal: spacing.lg,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    ...shadows.md,
   },
   goalsButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.surface,
   },
 });
 

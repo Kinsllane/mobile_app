@@ -12,6 +12,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useBooks } from '../context/BooksContext';
 import ProgressBar from '../components/ProgressBar';
+import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const GOALS_STORAGE_KEY = '@reading_goals';
 
@@ -114,7 +115,7 @@ const GoalsScreen = ({ navigation }) => {
     <ScrollView style={styles.container}>
       {/* Заголовок */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🎯 Цели чтения</Text>
+        <Text style={styles.headerTitle}>Цели чтения</Text>
         <Text style={styles.headerSubtitle}>
           Ставьте цели и отслеживайте прогресс
         </Text>
@@ -151,7 +152,7 @@ const GoalsScreen = ({ navigation }) => {
             style={styles.editButton}
             onPress={() => openEditModal('yearly')}
           >
-            <Text style={styles.editButtonText}>✏️ Изменить</Text>
+            <Text style={styles.editButtonText}>Изменить</Text>
           </TouchableOpacity>
         </View>
         {goals.yearlyGoal > 0 ? (
@@ -164,7 +165,7 @@ const GoalsScreen = ({ navigation }) => {
               label={`Прогресс: ${readBooksThisYear} из ${goals.yearlyGoal}`}
               value={readBooksThisYear}
               count={readBooksThisYear}
-              color={yearlyProgress >= 100 ? '#28a745' : '#6200ee'}
+              color={yearlyProgress >= 100 ? '#10B981' : '#7C3AED'}
               maxValue={goals.yearlyGoal}
             />
             {yearlyProgress >= 100 && (
@@ -194,7 +195,7 @@ const GoalsScreen = ({ navigation }) => {
             style={styles.editButton}
             onPress={() => openEditModal('monthly')}
           >
-            <Text style={styles.editButtonText}>✏️ Изменить</Text>
+            <Text style={styles.editButtonText}>Изменить</Text>
           </TouchableOpacity>
         </View>
         {goals.monthlyGoal > 0 ? (
@@ -207,7 +208,7 @@ const GoalsScreen = ({ navigation }) => {
               label={`Прогресс: ${readBooksThisMonth} из ${goals.monthlyGoal}`}
               value={readBooksThisMonth}
               count={readBooksThisMonth}
-              color={monthlyProgress >= 100 ? '#28a745' : '#FFA500'}
+              color={monthlyProgress >= 100 ? '#10B981' : '#F59E0B'}
               maxValue={goals.monthlyGoal}
             />
             {monthlyProgress >= 100 && (
@@ -232,16 +233,16 @@ const GoalsScreen = ({ navigation }) => {
       {/* Кнопки навигации */}
       <View style={styles.navigationButtons}>
         <TouchableOpacity
-          style={styles.navButton}
+          style={[styles.navButton, styles.navButtonStats]}
           onPress={() => navigation.navigate('Statistics')}
         >
-          <Text style={styles.navButtonText}>📊 Статистика</Text>
+          <Text style={styles.navButtonText}>Статистика</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.navButton, { backgroundColor: '#28a745' }]}
+          style={[styles.navButton, styles.navButtonBooks]}
           onPress={() => navigation.navigate('BooksList')}
         >
-          <Text style={styles.navButtonText}>📚 К списку книг</Text>
+          <Text style={styles.navButtonText}>К списку книг</Text>
         </TouchableOpacity>
       </View>
 
@@ -266,7 +267,7 @@ const GoalsScreen = ({ navigation }) => {
               value={goalInput}
               onChangeText={setGoalInput}
               placeholder="Введите число"
-              placeholderTextColor="#666"
+              placeholderTextColor={colors.textTertiary}
             />
             <View style={styles.modalButtons}>
               <TouchableOpacity
@@ -294,42 +295,41 @@ const GoalsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.backgroundSecondary,
   },
   header: {
-    backgroundColor: '#6200ee',
-    padding: 20,
-    paddingBottom: 30,
+    padding: spacing.lg,
+    paddingBottom: spacing.xl,
+    backgroundColor: colors.warning,
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    color: colors.surface,
+    marginBottom: spacing.xs,
   },
   headerSubtitle: {
-    fontSize: 14,
-    color: '#fff',
+    fontSize: typography.base,
+    color: colors.surface,
     opacity: 0.9,
+    fontWeight: typography.semibold,
   },
   summaryCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginTop: -10,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    marginHorizontal: spacing.base,
+    marginTop: spacing.base,
+    marginBottom: spacing.base,
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   summaryTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 16,
+    fontSize: typography.lg,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.base,
   },
   summaryRow: {
     flexDirection: 'row',
@@ -339,94 +339,100 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   summaryValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#28a745',
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    color: colors.primary,
   },
   summaryLabel: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    marginTop: spacing.xs,
+    fontWeight: typography.medium,
   },
   goalCard: {
-    backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.base,
+    padding: spacing.lg,
+    borderRadius: borderRadius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   goalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.md,
+    gap: spacing.sm,
   },
   goalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    flex: 1,
   },
   editButton: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.sm,
+    borderWidth: 1,
+    borderColor: colors.primary,
   },
   editButtonText: {
-    fontSize: 14,
-    color: '#6200ee',
-    fontWeight: '600',
+    fontSize: typography.xs,
+    color: colors.primary,
+    fontWeight: typography.bold,
   },
   goalDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    marginBottom: spacing.base,
+    fontWeight: typography.regular,
   },
   noGoalText: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: typography.base,
+    color: colors.textTertiary,
     fontStyle: 'italic',
   },
   successMessage: {
-    fontSize: 14,
-    color: '#28a745',
-    fontWeight: 'bold',
-    marginTop: 8,
+    fontSize: typography.base,
+    color: colors.success,
+    fontWeight: typography.bold,
+    marginTop: spacing.sm,
     textAlign: 'center',
   },
   remainingText: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 8,
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    marginTop: spacing.sm,
+    fontWeight: typography.medium,
   },
   navigationButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 16,
-    marginBottom: 16,
+    marginHorizontal: spacing.base,
+    marginBottom: spacing.base,
+    gap: spacing.md,
   },
   navButton: {
-    backgroundColor: '#6200ee',
     flex: 1,
-    marginHorizontal: 4,
-    padding: 14,
-    borderRadius: 10,
+    borderRadius: borderRadius.lg,
+    paddingVertical: spacing.base,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+    ...shadows.sm,
+  },
+  navButtonStats: {
+    backgroundColor: colors.secondary,
+  },
+  navButtonBooks: {
+    backgroundColor: colors.success,
   },
   navButtonText: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.surface,
   },
   modalOverlay: {
     flex: 1,
@@ -435,57 +441,65 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#fff',
-    marginHorizontal: 20,
-    padding: 24,
-    borderRadius: 16,
+    backgroundColor: colors.surface,
+    marginHorizontal: spacing.lg,
+    padding: spacing.xl,
+    borderRadius: borderRadius.xl,
     width: '90%',
+    ...shadows.lg,
   },
   modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: typography['2xl'],
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
   },
   modalDescription: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    marginBottom: spacing.base,
+    fontWeight: typography.regular,
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 20,
+    borderColor: colors.border,
+    borderRadius: borderRadius.md,
+    padding: spacing.base,
+    fontSize: typography.base,
+    marginBottom: spacing.lg,
+    color: colors.textPrimary,
+    backgroundColor: colors.backgroundSecondary,
+    fontWeight: typography.medium,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: spacing.md,
   },
   modalButton: {
     flex: 1,
-    padding: 14,
-    borderRadius: 8,
-    marginHorizontal: 4,
+    paddingVertical: spacing.base,
+    borderRadius: borderRadius.md,
     alignItems: 'center',
   },
   modalButtonCancel: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.backgroundSecondary,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   modalButtonSave: {
-    backgroundColor: '#6200ee',
+    backgroundColor: colors.primary,
+    ...shadows.sm,
   },
   modalButtonTextCancel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#666',
+    fontSize: typography.base,
+    fontWeight: typography.semibold,
+    color: colors.textSecondary,
   },
   modalButtonTextSave: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.surface,
   },
 });
 

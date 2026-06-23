@@ -5,9 +5,9 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import { useBooks } from '../context/BooksContext';
+import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const FavoritesScreen = ({ navigation }) => {
   const { books } = useBooks();
@@ -48,12 +48,12 @@ const FavoritesScreen = ({ navigation }) => {
             {
               backgroundColor:
                 item.status === 'Прочитано'
-                  ? '#28a745'
+                  ? '#10B981'
                   : item.status === 'Читаю'
-                  ? '#FFA500'
+                  ? '#F59E0B'
                   : item.status === 'Планирую прочитать'
-                  ? '#6200ee'
-                  : '#dc3545',
+                  ? '#7C3AED'
+                  : '#EF4444',
             },
           ]}
         >
@@ -67,7 +67,7 @@ const FavoritesScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Заголовок */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>❤️ Избранное</Text>
+        <Text style={styles.headerTitle}>Избранное</Text>
         <Text style={styles.headerSubtitle}>
           {favoriteBooks.length}{' '}
           {favoriteBooks.length === 1
@@ -89,7 +89,7 @@ const FavoritesScreen = ({ navigation }) => {
             style={styles.emptyButton}
             onPress={() => navigation.navigate('BooksList')}
           >
-            <Text style={styles.emptyButtonText}>📚 К списку книг</Text>
+            <Text style={styles.emptyButtonText}>К списку книг</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -108,39 +108,38 @@ const FavoritesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: colors.backgroundSecondary,
   },
   header: {
-    backgroundColor: '#6200ee',
-    padding: 20,
-    paddingBottom: 30,
+    padding: spacing.lg,
+    paddingBottom: spacing.xl,
+    backgroundColor: colors.favorite,
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    color: colors.surface,
+    marginBottom: spacing.xs,
   },
   headerSubtitle: {
-    fontSize: 14,
-    color: '#fff',
+    fontSize: typography.base,
+    color: colors.surface,
     opacity: 0.9,
+    fontWeight: typography.semibold,
   },
   listContent: {
-    padding: 16,
-    paddingTop: 8,
+    padding: spacing.base,
+    paddingTop: spacing.sm,
   },
   bookCard: {
-    backgroundColor: '#fff',
-    marginBottom: 12,
-    borderRadius: 12,
-    borderLeftWidth: 6,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: colors.surface,
+    marginBottom: spacing.base,
+    borderRadius: borderRadius.lg,
+    borderLeftWidth: 4,
+    padding: spacing.base,
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...shadows.sm,
   },
   bookContent: {
     flex: 1,
@@ -149,84 +148,89 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 4,
+    marginBottom: spacing.xs,
   },
   bookTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontSize: typography.xl,
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
     flex: 1,
-    marginRight: 8,
+    marginRight: spacing.sm,
   },
   favoriteIcon: {
-    fontSize: 20,
+    fontSize: 22,
   },
   bookAuthor: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    fontWeight: typography.regular,
   },
   genreBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginBottom: 8,
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.md,
+    marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.primary,
   },
   genreText: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '600',
+    fontSize: typography.sm,
+    color: colors.primary,
+    fontWeight: typography.semibold,
   },
   bookRating: {
-    fontSize: 16,
-    marginBottom: 8,
+    fontSize: typography.base,
+    marginBottom: spacing.sm,
   },
   statusBadge: {
     alignSelf: 'flex-start',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 6,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.md,
   },
   statusText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: '600',
+    fontSize: typography.sm,
+    color: colors.surface,
+    fontWeight: typography.bold,
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 40,
+    padding: spacing['2xl'],
   },
   emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
+    fontSize: 90,
+    marginBottom: spacing.xl,
   },
   emptyTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: typography['2xl'],
+    fontWeight: typography.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
     textAlign: 'center',
   },
   emptyText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: typography.base,
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: spacing['2xl'],
+    fontWeight: typography.regular,
   },
   emptyButton: {
-    backgroundColor: '#6200ee',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: borderRadius.lg,
+    backgroundColor: colors.secondary,
+    paddingVertical: spacing.base,
+    paddingHorizontal: spacing.xl,
+    ...shadows.sm,
   },
   emptyButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: typography.base,
+    fontWeight: typography.bold,
+    color: colors.surface,
   },
 });
 
