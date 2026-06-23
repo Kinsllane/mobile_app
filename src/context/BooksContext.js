@@ -19,6 +19,9 @@ const DEFAULT_BOOKS = [
     isFavorite: false,
     notes: '',
     keyPoints: [],
+    totalPages: 320,
+    currentPage: 320,
+    startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: '2',
@@ -32,6 +35,16 @@ const DEFAULT_BOOKS = [
     isFavorite: false,
     notes: '',
     keyPoints: [],
+    totalPages: 600,
+    currentPage: 250,
+    startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    readingHistory: [
+      { date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), pages: 0 },
+      { date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), pages: 100 },
+      { date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), pages: 180 },
+      { date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), pages: 230 },
+      { date: new Date().toISOString(), pages: 250 },
+    ],
   },
   {
     id: '3',
@@ -45,6 +58,9 @@ const DEFAULT_BOOKS = [
     isFavorite: true,
     notes: 'Отличная книга про эволюцию человечества!',
     keyPoints: ['История развития человека', 'Когнитивная революция', 'Появление земледелия'],
+    totalPages: 512,
+    currentPage: 512,
+    startDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
@@ -111,10 +127,13 @@ export const BooksProvider = ({ children }) => {
     const newBook = {
       ...book,
       id: Date.now().toString(), // Простой ID на основе времени
-      coverColor: getRandomColor(),
+      coverColor: book.coverColor || getRandomColor(),
       isFavorite: book.isFavorite || false,
       notes: book.notes || '',
       keyPoints: book.keyPoints || [],
+      totalPages: book.totalPages || 0,
+      currentPage: book.currentPage || 0,
+      startDate: book.startDate || null,
     };
     const updatedBooks = [...books, newBook];
     await saveBooks(updatedBooks);
@@ -123,9 +142,46 @@ export const BooksProvider = ({ children }) => {
 
   // Обновить книгу
   const updateBook = async (bookId, updatedData) => {
-    const updatedBooks = books.map((book) =>
-      book.id === bookId ? { ...book, ...updatedData } : book
-    );
+    const updatedBooks = books.map((book) => {
+      if (book.id === bookId) {
+        const updatedBook = { ...book, ...updatedData };
+        
+        // Если изменилась текущая страница - добавляем в историю чтения
+        if (updatedData.currentPage !== undefined && updatedData.currentPage !== book.currentPage) {
+          const currentHistory = book.readingHistory || [];
+          const today = new Date().toISOString().split('T')[0]; // Формат: YYYY-MM-DD
+          
+          // Проверяем, есть ли уже запись за сегодня
+          const todayIndex = currentHistory.findIndex(entry => 
+            entry.date.split('T')[0] === today
+          );
+          
+          if (todayIndex >= 0) {
+            // Обновляем запись за сегодня
+            currentHistory[todayIndex] = {
+              date: new Date().toISOString(),
+              pages: updatedData.currentPage,
+            };
+          } else {
+            // Добавляем новую запись
+            currentHistory.push({
+              date: new Date().toISOString(),
+              pages: updatedData.currentPage,
+            });
+          }
+          
+          updatedBook.readingHistory = currentHistory;
+          
+          // Устанавливаем startDate если его нет и currentPage > 0
+          if (!updatedBook.startDate && updatedData.currentPage > 0) {
+            updatedBook.startDate = new Date().toISOString();
+          }
+        }
+        
+        return updatedBook;
+      }
+      return book;
+    });
     await saveBooks(updatedBooks);
   };
 

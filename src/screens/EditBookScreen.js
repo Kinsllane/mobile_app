@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useBooks, GENRES } from '../context/BooksContext';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
+import CoverImagePicker from '../components/CoverImagePicker';
 
 const EditBookScreen = ({ route, navigation }) => {
   const { bookId } = route.params;
@@ -22,6 +23,9 @@ const EditBookScreen = ({ route, navigation }) => {
   const [status, setStatus] = useState('Планирую прочитать');
   const [genre, setGenre] = useState('Другое');
   const [summary, setSummary] = useState('');
+  const [coverImage, setCoverImage] = useState(null);
+  const [totalPages, setTotalPages] = useState('');
+  const [currentPage, setCurrentPage] = useState('0');
 
   const statuses = ['Планирую прочитать', 'Читаю', 'Прочитано', 'Отложено'];
 
@@ -33,6 +37,9 @@ const EditBookScreen = ({ route, navigation }) => {
       setStatus(book.status);
       setGenre(book.genre || 'Другое');
       setSummary(book.summary || '');
+      setCoverImage(book.coverImage || null);
+      setTotalPages(book.totalPages ? book.totalPages.toString() : '');
+      setCurrentPage(book.currentPage ? book.currentPage.toString() : '0');
     }
   }, [book]);
 
@@ -56,14 +63,32 @@ const EditBookScreen = ({ route, navigation }) => {
       return;
     }
 
-    await updateBook(bookId, {
+    const totalPagesNum = parseInt(totalPages) || 0;
+    const currentPageNum = parseInt(currentPage) || 0;
+
+    if (totalPagesNum > 0 && currentPageNum > totalPagesNum) {
+      Alert.alert('Ошибка', 'Текущая страница не может быть больше общего количества');
+      return;
+    }
+
+    // Если начали читать (currentPage > 0) и нет startDate, устанавливаем его
+    const updateData = {
       title: title.trim(),
       author: author.trim(),
       rating: ratingNum,
       status,
       genre,
       summary: summary.trim(),
-    });
+      coverImage: coverImage,
+      totalPages: totalPagesNum,
+      currentPage: currentPageNum,
+    };
+
+    if (currentPageNum > 0 && !book.startDate) {
+      updateData.startDate = new Date().toISOString();
+    }
+
+    await updateBook(bookId, updateData);
 
     Alert.alert(
       'Успех!',
@@ -80,6 +105,13 @@ const EditBookScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form}>
+        {/* Компонент выбора обложки */}
+        <CoverImagePicker
+          currentImage={coverImage}
+          onImageSelected={setCoverImage}
+          coverColor={book.coverColor}
+        />
+
         <Text style={styles.label}>Название книги *</Text>
         <TextInput
           style={styles.input}
@@ -106,6 +138,26 @@ const EditBookScreen = ({ route, navigation }) => {
           onChangeText={setRating}
           keyboardType="numeric"
           maxLength={1}
+          placeholderTextColor={colors.textTertiary}
+        />
+
+        <Text style={styles.label}>Количество страниц</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Всего страниц в книге"
+          value={totalPages}
+          onChangeText={setTotalPages}
+          keyboardType="numeric"
+          placeholderTextColor={colors.textTertiary}
+        />
+
+        <Text style={styles.label}>Текущая страница</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="На какой странице сейчас"
+          value={currentPage}
+          onChangeText={setCurrentPage}
+          keyboardType="numeric"
           placeholderTextColor={colors.textTertiary}
         />
 

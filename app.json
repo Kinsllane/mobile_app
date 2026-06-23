@@ -18,7 +18,9 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Приложение использует вашу геолокацию для отметки мест, где вы читаете книги.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Приложение использует вашу геолокацию для отметки мест, где вы читаете книги."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Приложение использует вашу геолокацию для отметки мест, где вы читаете книги.",
+        "NSPhotoLibraryUsageDescription": "Приложение использует вашу галерею для загрузки обложек книг.",
+        "NSCameraUsageDescription": "Приложение использует камеру для съёмки обложек книг."
       }
     },
     "android": {
@@ -30,7 +32,10 @@
       },
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "CAMERA"
       ]
     },
     "web": {

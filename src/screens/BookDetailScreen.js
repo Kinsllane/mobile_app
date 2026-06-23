@@ -8,9 +8,11 @@ import {
   Alert,
   TextInput,
   Modal,
+  Image,
 } from 'react-native';
 import { useBooks } from '../context/BooksContext';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
+import ReadingProgress from '../components/ReadingProgress';
 
 const BookDetailScreen = ({ route, navigation }) => {
   const { bookId } = route.params;
@@ -85,15 +87,33 @@ const BookDetailScreen = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={[styles.coverContainer, { backgroundColor: book.coverColor }]}>
-        <Text style={styles.coverEmoji}>📚</Text>
-      </View>
+      {book.coverImage ? (
+        <Image
+          source={{ uri: book.coverImage }}
+          style={styles.coverImage}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={[styles.coverContainer, { backgroundColor: book.coverColor }]}>
+          <Text style={styles.coverEmoji}>📚</Text>
+        </View>
+      )}
 
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{book.title}</Text>
         <Text style={styles.author}>Автор: {book.author}</Text>
         {book.genre && (
           <Text style={styles.genre}>🏷️ Жанр: {book.genre}</Text>
+        )}
+
+        {/* Прогресс чтения */}
+        {book.totalPages > 0 && (
+          <ReadingProgress
+            currentPage={book.currentPage || 0}
+            totalPages={book.totalPages}
+            startDate={book.startDate}
+            readingHistory={book.readingHistory}
+          />
         )}
 
         {/* Кнопка избранного */}
@@ -279,6 +299,10 @@ const styles = StyleSheet.create({
     height: 250,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  coverImage: {
+    width: '100%',
+    height: 400,
   },
   coverEmoji: {
     fontSize: 100,

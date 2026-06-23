@@ -10,17 +10,39 @@ import {
 } from 'react-native';
 import { useBooks, GENRES } from '../context/BooksContext';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
+import CoverImagePicker from '../components/CoverImagePicker';
 
 const AddBookScreen = ({ navigation }) => {
   const { addBook } = useBooks();
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [rating, setRating] = useState('');
-  const [status, setStatus] = useState('Планирую прочитать');
+  const [status, setStatus] = useState('Планирую');
   const [genre, setGenre] = useState('Другое');
   const [summary, setSummary] = useState('');
+  const [coverImage, setCoverImage] = useState(null);
+  const [coverColor] = useState(getRandomColor());
+  const [totalPages, setTotalPages] = useState('');
+  const [currentPage, setCurrentPage] = useState('0');
 
-  const statuses = ['Планирую прочитать', 'Читаю', 'Прочитано', 'Отложено'];
+  const statuses = ['Планирую', 'Читаю', 'Прочитано', 'Отложено'];
+
+  // Случайный цвет для обложки (если нет изображения)
+  function getRandomColor() {
+    const colors = [
+      '#FF6B6B',
+      '#4ECDC4',
+      '#45B7D1',
+      '#FFA07A',
+      '#98D8C8',
+      '#F7DC6F',
+      '#BB8FCE',
+      '#85C1E2',
+      '#F8B739',
+      '#52B788',
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+  }
 
   const handleSave = async () => {
     if (!title || !author) {
@@ -34,6 +56,14 @@ const AddBookScreen = ({ navigation }) => {
       return;
     }
 
+    const totalPagesNum = parseInt(totalPages) || 0;
+    const currentPageNum = parseInt(currentPage) || 0;
+
+    if (totalPagesNum > 0 && currentPageNum > totalPagesNum) {
+      Alert.alert('Ошибка', 'Текущая страница не может быть больше общего количества');
+      return;
+    }
+
     await addBook({
       title: title.trim(),
       author: author.trim(),
@@ -41,6 +71,11 @@ const AddBookScreen = ({ navigation }) => {
       status,
       genre,
       summary: summary.trim(),
+      coverImage: coverImage,
+      coverColor: coverColor,
+      totalPages: totalPagesNum,
+      currentPage: currentPageNum,
+      startDate: currentPageNum > 0 ? new Date().toISOString() : null,
     });
 
     Alert.alert(
@@ -58,6 +93,13 @@ const AddBookScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.form}>
+        {/* Компонент выбора обложки */}
+        <CoverImagePicker
+          currentImage={coverImage}
+          onImageSelected={setCoverImage}
+          coverColor={coverColor}
+        />
+
         <Text style={styles.label}>Название книги *</Text>
         <TextInput
           style={styles.input}
@@ -84,6 +126,26 @@ const AddBookScreen = ({ navigation }) => {
           onChangeText={setRating}
           keyboardType="numeric"
           maxLength={1}
+          placeholderTextColor={colors.textTertiary}
+        />
+
+        <Text style={styles.label}>Количество страниц</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Всего страниц в книге"
+          value={totalPages}
+          onChangeText={setTotalPages}
+          keyboardType="numeric"
+          placeholderTextColor={colors.textTertiary}
+        />
+
+        <Text style={styles.label}>Текущая страница</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="На какой странице сейчас"
+          value={currentPage}
+          onChangeText={setCurrentPage}
+          keyboardType="numeric"
           placeholderTextColor={colors.textTertiary}
         />
 

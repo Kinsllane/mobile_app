@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
+  Image,
 } from 'react-native';
 import { useBooks, GENRES } from '../context/BooksContext';
 import { colors, typography, spacing, borderRadius, shadows } from '../utils/theme';
@@ -343,14 +344,43 @@ const BooksListScreen = ({ navigation }) => {
                     style={styles.bookCard}
                     onPress={() => navigation.navigate('BookDetail', { bookId: item.id })}
                   >
-                    <View style={[styles.bookCover, { backgroundColor: item.coverColor }]}>
-                      <Text style={styles.bookCoverText}>📚</Text>
-                    </View>
+                    {item.coverImage ? (
+                      <Image
+                        source={{ uri: item.coverImage }}
+                        style={styles.bookCoverImage}
+                      />
+                    ) : (
+                      <View style={[styles.bookCover, { backgroundColor: item.coverColor }]}>
+                        <Text style={styles.bookCoverText}>📚</Text>
+                      </View>
+                    )}
                     <View style={styles.bookInfo}>
                       <Text style={styles.bookTitle}>{item.title}</Text>
                       <Text style={styles.bookAuthor}>{item.author}</Text>
                       {item.genre && (
                         <Text style={styles.bookGenre}>🏷️ {item.genre}</Text>
+                      )}
+                      {item.totalPages > 0 && (
+                        <View style={styles.progressContainer}>
+                          <View style={styles.progressBarSmall}>
+                            <View
+                              style={[
+                                styles.progressBarFillSmall,
+                                {
+                                  width: `${Math.min(
+                                    Math.round(
+                                      ((item.currentPage || 0) / item.totalPages) * 100
+                                    ),
+                                    100
+                                  )}%`,
+                                },
+                              ]}
+                            />
+                          </View>
+                          <Text style={styles.progressText}>
+                            {item.currentPage || 0} / {item.totalPages} стр.
+                          </Text>
+                        </View>
                       )}
                       <View style={styles.bookMeta}>
                         <Text style={styles.rating}>
@@ -669,6 +699,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  bookCoverImage: {
+    width: 95,
+    height: 140,
+    borderRadius: borderRadius.md,
+  },
   bookCoverText: {
     fontSize: 48,
   },
@@ -693,6 +728,26 @@ const styles = StyleSheet.create({
     fontSize: typography.sm,
     color: colors.textTertiary,
     marginBottom: spacing.sm,
+    fontWeight: typography.medium,
+  },
+  progressContainer: {
+    marginBottom: spacing.sm,
+  },
+  progressBarSmall: {
+    height: 6,
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginBottom: spacing.xs,
+  },
+  progressBarFillSmall: {
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: 3,
+  },
+  progressText: {
+    fontSize: typography.xs,
+    color: colors.textTertiary,
     fontWeight: typography.medium,
   },
   bookMeta: {
